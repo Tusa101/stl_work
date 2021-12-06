@@ -32,5 +32,104 @@ int main()
         cout << *i << "\n";
         i++;
     }
-    ConsoleMenu();
+
+    char pressed_button;
+
+    while(true)
+    {
+        ConsoleMenu();
+        cin >> pressed_button;
+	    switch (pressed_button)
+	    {
+        case '+':
+        {
+            system("cls");
+            cout << "---Добавление элемента---\n";
+            cout << "Введите новую страну и ее характеристики.\n";
+            std::cout << "Известны население и инфляция?([y] - да, [n] - нет)\n >>>";
+            char choice;
+            std::cin >> choice;
+
+            Country add_country = Country();
+            if (choice =='y')
+            {
+	            std::cout << "Название страны:";
+                string name;
+                std::cin >> name;
+                add_country.SetName(name);
+                std::cout << "Население:";
+                int population;
+                std::cin >> population;
+                add_country.SetPopulation(population);
+                std::cout << "Инфляция:";
+                double inflation;
+                std::cin >> inflation;
+                add_country.SetInflation(inflation);
+
+                country_v.push_back(add_country);
+            }
+        }break;
+        case '-':
+        {
+            system("cls");
+            cout << "---Удаление элемента---\n";
+            int index;
+        	cout << "Введте индекс элемента: ";
+            cin >> index;
+            auto iter = country_v.begin();
+                switch (index)
+                {
+                case 0:
+	                {
+		                
+	                }break;
+                case country_v.size():
+                }
+            if (index==0)
+            {
+                country_v.erase(iter);
+            }
+            
+            
+            
+        }break;
+        case 'o':
+        {
+
+        }break;
+        case 's':
+        {
+
+        }break;
+        case 'x':
+        {
+
+        }break;
+        case 'a':
+        {
+
+        }break;
+        case 'p':
+        {
+
+        }break;
+        case 'i':
+        {
+
+        }break;
+        case 'e':
+        {
+            system("cls");
+            cout << "Завершение работы программы...";
+            Sleep(2000);
+        }break;
+        default:
+        {
+            cout << "\nФункции на данную кнопку не назначено!\n";
+        }break;
+	    }
+        if(pressed_button == 'e')
+            break;
+    }
+    return 0;
 }
