@@ -26,10 +26,14 @@ public:
 	void SetPopulation(const int& population) { population_ = population; }
 	double GetInflation() const { return inflation_; }
 	void SetInflation(const double& inflation) { inflation_ = inflation; }
-	Country& operator= (Country& country);
+	Country& operator= (const Country& country);
 	bool operator==(const Country& country) const;
 	friend std::ostream& operator <<(std::ostream& out, const Country& country);
-
+	
+	~Country()
+	{
+		name_.clear();
+	}
 private:
 	std::string name_;
 	int population_;

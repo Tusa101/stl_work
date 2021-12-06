@@ -2,12 +2,12 @@
 #include "country_class.h"
 
 
-Country& Country::operator= (Country& country)
+Country& Country::operator= (const Country& country)
 {
 	if (&country == this) return *this;
-	this->name_ = country.GetName();
-	this->population_ = country.GetPopulation();
-	this->inflation_ = country.GetInflation();
+	name_ = country.GetName();
+	population_ = country.GetPopulation();
+	inflation_ = country.GetInflation();
 	return *this;
 }
 
@@ -22,6 +22,6 @@ bool Country::operator==(const Country& country) const
 
 std::ostream& operator <<(std::ostream& out, const Country& country)
 {
-	std::cout << "Имя: " << country.GetName() << ", Наcеление: " << country.GetPopulation() << "млн.чел., Инфляция: " << country.GetInflation() << "%.";
+	std::cout << "Имя: " << country.GetName() << ", Наcеление: " << country.GetPopulation() << " млн.чел., Инфляция: " << country.GetInflation() << "%.";
 	return out;
 }

@@ -11,8 +11,8 @@ int main()
 {
     SetConsoleCP(121);
     SetConsoleOutputCP(1251);
-    int Var = (int('T') + int('A')) % 7; // var 2 Country
-    cout << "\t Лабораторная работа №6. Вариант " << Var<< ".\n";
+    const int var = (static_cast<int>('T') + static_cast<int>('A')) % 7; // var 2 Country
+    cout << "\t Лабораторная работа №6. Вариант " << var<< ".\n";
     cout << " (в лабораторной работе используется контейнер vector)\n\n\n";
   
     Country co_arr[] = { {"Russia",146,7},//0
@@ -25,14 +25,14 @@ int main()
                            {"India",1382,4}};//7
 
     vector<Country> country_v(co_arr, co_arr + 8);
-    vector<Country>::iterator i = country_v.begin();
+    auto i = country_v.begin();
     cout << "-----Начальные данные-----\n";
     while(i!=country_v.end())
     {
         cout << *i << "\n";
-        i++;
+        ++i;
     }
-
+    
     char pressed_button;
 
     while(true)
@@ -50,7 +50,7 @@ int main()
             char choice;
             std::cin >> choice;
 
-            Country add_country = Country();
+            auto add_country = Country();
             if (choice =='y')
             {
 	            std::cout << "Название страны:";
@@ -73,32 +73,53 @@ int main()
         {
             system("cls");
             cout << "---Удаление элемента---\n";
-            int index;
-        	cout << "Введте индекс элемента: ";
+            unsigned int index;
+            const unsigned int v_size = country_v.size();
+        	cout << "Введите индекс элемента: ";
             cin >> index;
-            auto iter = country_v.begin();
-                switch (index)
-                {
-                case 0:
-	                {
-		                
-	                }break;
-                case country_v.size():
-                }
-            if (index==0)
-            {
-                country_v.erase(iter);
-            }
             
+            if (index < v_size - 1)
+            {
+	            std::cout << "Удален элемент с индексом "<<index<<":\n" << country_v[index] << "\n";
+                country_v.erase(country_v.begin() + index);
+                break;
+            }
+            if (index == v_size - 1)
+            {
+                std::cout << "Удален элемент с индексом " << index << ":\n" << country_v[index] << "\n";
+                country_v.pop_back();
+                break;
+            }
+            std::cout << "Элемент по такому индексу не существует.\n";
             
             
         }break;
         case 'o':
         {
-
+            cout << "\n---Данные, находящиеся в данный момент в векторе---\n";
+            auto i = country_v.begin();
+            int cnt = 0;
+            while (i != country_v.end())
+            {
+                std::cout<< ++cnt << ") " << *i << "\n";
+                ++i;
+            }
         }break;
         case 's':
         {
+            system("cls");
+            cout << "\n---Cортировка(возрастание/убывание)---\n";
+            std::cout << "Выберите критерий сортировки:\n";
+            std::cout << "1. По длине названия страны;\n";
+            std::cout << "2. По населению;\n";
+            std::cout << "3. По инфляции.\n";
+            char criteria;
+            std::cin >> criteria;
+            std::cout << "Выберите тип сортировки:\n";
+            std::cout << "1. По возрастанию;\n";
+            std::cout << "2. По убыванию.\n";
+            
+
 
         }break;
         case 'x':
