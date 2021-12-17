@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="country_class.h" />
+    <ClInclude Include="algo_overloads.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

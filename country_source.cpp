@@ -20,6 +20,13 @@ bool Country::operator==(const Country& country) const
 	return false;
 }
 
+Country& Country::operator+(const Country& other) const
+{
+	int temp_pop = population_ + other.GetPopulation();
+	Country temp = Country("", temp_pop, 0);
+	return temp;
+}
+
 std::ostream& operator <<(std::ostream& out, const Country& country)
 {
 	std::cout << "Имя: " << country.GetName() << ", Наcеление: " << country.GetPopulation() << " млн.чел., Инфляция: " << country.GetInflation() << "%.";
