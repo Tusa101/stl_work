@@ -2,10 +2,17 @@
 #include <Windows.h>
 #include <algorithm>
 #include <functional>
+#include <numeric>
 #include "country_class.h"
 #include <vector>
+//#include "algo_overloads.h"
+
 using namespace std;
+
+void DeletedMessage(unsigned int& index, const std::vector<Country>& country_v);
 void ConsoleMenu();
+void DisplayVector(std::vector<Country>& country_v);
+
 
 int main()
 {
@@ -46,28 +53,24 @@ int main()
             system("cls");
             cout << "---Добавление элемента---\n";
             cout << "Введите новую страну и ее характеристики.\n";
-            std::cout << "Известны население и инфляция?([y] - да, [n] - нет)\n >>>";
-            char choice;
-            std::cin >> choice;
-
+            
             auto add_country = Country();
-            if (choice =='y')
-            {
-	            std::cout << "Название страны:";
-                string name;
-                std::cin >> name;
-                add_country.SetName(name);
-                std::cout << "Население:";
-                int population;
-                std::cin >> population;
-                add_country.SetPopulation(population);
-                std::cout << "Инфляция:";
-                double inflation;
-                std::cin >> inflation;
-                add_country.SetInflation(inflation);
 
-                country_v.push_back(add_country);
-            }
+            std::cout << "Название страны:";
+            string name;
+            std::cin >> name;
+            add_country.SetName(name);
+            std::cout << "Население:";
+            int population;
+            std::cin >> population;
+            add_country.SetPopulation(population);
+            std::cout << "Инфляция:";
+            double inflation;
+            std::cin >> inflation;
+            add_country.SetInflation(inflation);
+
+            country_v.push_back(add_country);
+           
         }break;
         case '-':
         {
@@ -78,15 +81,15 @@ int main()
         	cout << "Введите индекс элемента: ";
             cin >> index;
             
-            if (index < v_size - 1)
+            if (index > 0 && index < v_size)
             {
-	            std::cout << "Удален элемент с индексом "<<index<<":\n" << country_v[index] << "\n";
-                country_v.erase(country_v.begin() + index);
+                DeletedMessage(index, country_v);
+                country_v.erase(country_v.begin() + index - 1);
                 break;
             }
-            if (index == v_size - 1)
+            if (index == v_size)
             {
-                std::cout << "Удален элемент с индексом " << index << ":\n" << country_v[index] << "\n";
+                DeletedMessage(index, country_v);
                 country_v.pop_back();
                 break;
             }
@@ -96,47 +99,259 @@ int main()
         }break;
         case 'o':
         {
-            cout << "\n---Данные, находящиеся в данный момент в векторе---\n";
-            auto i = country_v.begin();
-            int cnt = 0;
-            while (i != country_v.end())
-            {
-                std::cout<< ++cnt << ") " << *i << "\n";
-                ++i;
-            }
+            system("cls");
+            std::cout << "\n---Данные, находящиеся в данный момент в векторе---\n";
+            DisplayVector(country_v);
         }break;
         case 's':
         {
             system("cls");
-            cout << "\n---Cортировка(возрастание/убывание)---\n";
+            cout << "\n---Cортировка---\n";
             std::cout << "Выберите критерий сортировки:\n";
             std::cout << "1. По длине названия страны;\n";
-            std::cout << "2. По населению;\n";
-            std::cout << "3. По инфляции.\n";
-            char criteria;
+            std::cout << "2. По алфавиту;\n";
+            std::cout << "3. По инфляции;\n";
+            std::cout << "4. По населению.\n";
+            std::cout << "\n >>> ";
+            int criteria;
             std::cin >> criteria;
-            std::cout << "Выберите тип сортировки:\n";
-            std::cout << "1. По возрастанию;\n";
-            std::cout << "2. По убыванию.\n";
-            
-
-
+            switch (criteria)
+            {
+            case 1:
+            {
+	            std::cout << "---Сортировка по длине названия---\n";
+                sort(country_v.begin(), country_v.end(), [](const Country& ctr1, const Country ctr2)
+                {
+	                return ctr1.GetName().length() > ctr2.GetName().length();
+                });
+                DisplayVector(country_v);
+            }break;
+            case 2:
+            {
+                std::cout << "---Сортировка по алфавиту---\n";
+                auto smth{ [](const Country& ctr1, const Country& ctr2){return ctr1.GetName() < ctr2.GetName();} };
+                sort(country_v.begin(), country_v.end(), [](const Country& ctr1, const Country& ctr2)
+                {
+					return ctr1.GetName() < ctr2.GetName();
+                });
+                DisplayVector(country_v);
+            }break;
+            case 3:
+            {
+                std::cout << "---Сортировка по инфляции---\n";
+                sort(country_v.begin(), country_v.end(), [](const Country & ctr1, const Country & ctr2) 
+                {
+                    return ctr1.GetInflation() > ctr2.GetInflation();
+                });
+                DisplayVector(country_v);
+            }break;
+            case 4:
+            {
+                std::cout << "---Сортировка по населению---\n";
+                sort(country_v.begin(), country_v.end(), [](const Country & ctr1, const Country & ctr2) 
+                {
+                    return ctr1.GetPopulation() > ctr2.GetPopulation();
+                });
+                DisplayVector(country_v);
+            }break;
+            default:
+            {
+                cout << "\nФункции на данную кнопку не назначено!\n";
+            }break;
+            }
         }break;
         case 'x':
         {
-
+            system("cls");
+	        std::cout << "  ---Нахождение максимума/минимума---\n";
+            std::cout << "\t(инфляция -> население)\n";
+            std::cout << "Выберите интересующий параметр:\n";
+            std::cout << "1. Максимум;\n";
+            std::cout << "2. Минимум.\n";
+            std::cout << ">>> ";
+            int criteria;
+            std::cin >> criteria;
+            auto Extremum{ [](const Country& ctr1, const Country& ctr2)
+            {
+                if (ctr1.GetInflation() == ctr2.GetInflation())
+                {
+                    return ctr1.GetPopulation() < ctr2.GetPopulation();
+                }
+                return ctr1.GetInflation() < ctr2.GetInflation();
+            }};
+            switch (criteria)
+            {
+            case 1:
+            {
+                auto iterator = max_element(country_v.begin(), country_v.end(), Extremum);
+                cout << "Максимальный элемент на позиции " << distance(country_v.begin(), iterator) + 1 << ":\n" << *iterator << "\n";
+            }break;
+            case 2:
+            {
+                auto iterator = min_element(country_v.begin(), country_v.end(), Extremum);
+                cout << "Минимальный элемент на позиции " << distance(country_v.begin(), iterator) + 1 <<":\n"<< *iterator << "\n";
+            }break;
+			default:
+            {
+                cout << "\nФункции на данную кнопку не назначено!\n";
+            }break;
+            }
         }break;
         case 'a':
         {
-
+	        std::cout << "---Вычисление агрегированного значения---\n";
+            Country sum = accumulate(country_v.begin(), country_v.end(), Country("",0,0), plus<Country>());
+	        std::cout << "Суммарная численность населения стран = "<< sum.GetPopulation() <<" млн.чел.\n";
         }break;
         case 'p':
         {
+            system("cls");
+            std::cout << "---Поиск элемента по  значению---\n";
+            std::cout << "1.Поиск страны с инфляцией inflation = N;\n";
+            std::cout << "2.Поиск страны с названием = N;\n";
+            std::cout << "3.Поиск страны с населением population = N.\n";
+            std::cout << "\nНомер критерия>>> ";
+            int criteria;
+            std::cin >> criteria;
+            std::cout << "\nN = ";
+            
+            switch (criteria)
+            {
+            case 1:
+            {
+                double inflation;
+                std::cin >> inflation;
+                std::cout << "Страна с инфляцией inflation = " << inflation << ": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&inflation](const Country& country) 
+                    {
+                        return country.GetInflation() == inflation;
+                    });
+
+            	if (country == country_v.end())
+                {
+                    std::cout << "Страны с такой инфляцией нет!!!";
+                }
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+            }break;
+            case 2:
+            {
+                string name;
+                std::cin >> name;
+                std::cout << "Страна с названием = " << name << ": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&name](const Country& country) 
+                {
+                    return country.GetName() == name;
+                });
+
+                if (country == country_v.end())
+                {
+                    std::cout << "Страны с таким названием нет!!!";
+                }
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+
+            }break;
+            case 3:
+            {
+                unsigned int population;
+                std::cin >> population;
+                std::cout << "Страна с населением population = " << population << ": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&population](const Country& country) 
+                {
+                    return country.GetPopulation() == population;
+                });
+
+            	if (country == country_v.end())
+            	{
+                    std::cout << "Страны с таким населением нет!!!";
+            	}
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+
+            }break;
+            default:
+            {
+                std::cout << "\nФункции на данную кнопку не назначено!\n";
+            }break;
+            }
+                
 
         }break;
         case 'i':
         {
-
+            system("cls");
+            std::cout << "---Поиск элемента по критерию---\n";
+            std::cout << "1.Поиск страны с инфляцией inflation > N;\n";
+            std::cout << "2.Поиск страны с длиной названия length > N;\n";
+            std::cout << "3.Поиск страны с населением population > N.\n";
+            std::cout << "\nНомер критерия>>> ";
+            int criteria;
+            std::cin >> criteria;
+            std::cout << "\nN = ";
+            float N;
+            std::cin >> N;
+            switch (criteria)
+            {
+            case 1:
+            {
+	            std::cout << "Страна с инфляцией inflation > \n"<< N <<": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&N](const Country& country) 
+                {
+                    return country.GetInflation() > N;
+                });
+                if (country == country_v.end())
+                {
+                    std::cout << "Страны с такой инфляцией нет!!!";
+                }
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+            }break;
+            case 2:
+            {
+                std::cout << "Страна с длиной названия length > \n" << N << ": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&N](const Country& country) 
+                {
+					return country.GetName().length() > static_cast<unsigned int>(N);
+                });
+                if (country == country_v.end())
+                {
+                    std::cout << "Страны с таким названием нет!!!";
+                }
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+            }break;
+            case 3:
+            {
+                std::cout << "Страна с населением population > \n" << N << ": \n";
+                auto country = find_if(country_v.begin(), country_v.end(), [&N](const Country& country) 
+                {
+                    return country.GetPopulation() > static_cast<int>(N);
+                });
+                if (country == country_v.end())
+                {
+                    std::cout << "Страны с таким населением нет!!!";
+                }
+                else
+                {
+                    std::cout << *country << "\n";
+                }
+            }break;
+            default:
+            {
+                std::cout << "\nФункции на данную кнопку не назначено!\n";
+            }break;
+            }
         }break;
         case 'e':
         {
@@ -152,5 +367,6 @@ int main()
         if(pressed_button == 'e')
             break;
     }
+    system("exit");
     return 0;
 }

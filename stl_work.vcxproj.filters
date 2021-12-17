@@ -29,5 +29,8 @@
     <ClInclude Include="country_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="algo_overloads.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -28,6 +28,7 @@ public:
 	void SetInflation(const double& inflation) { inflation_ = inflation; }
 	Country& operator= (const Country& country);
 	bool operator==(const Country& country) const;
+	Country& operator+ (const Country& other) const;
 	friend std::ostream& operator <<(std::ostream& out, const Country& country);
 	
 	~Country()
@@ -38,5 +39,5 @@ private:
 	std::string name_;
 	int population_;
 	double inflation_;
-
 };
+
